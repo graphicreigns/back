@@ -55,7 +55,7 @@ router.post('/getstat_command',function(req,res){
 	
 	var time_debut=parseInt(req.body.debut);
 	var time_fin=parseInt(req.body.fin);
-	//var date_debut=new Date();
+	var date_debut=new Date(time_fin);
 	//var date_fin= new Date();
 	
 	//var query_debut=new Date(date_debut.getFullYear(),date_debut.getMonth(),date_debut.getDate()-3);
