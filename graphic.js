@@ -10,6 +10,7 @@ var SITES=db.collection("sites");
 //var ALLDATE= db.collection("alldate");
 //var FORMULA= db.collection("formula"); 
 var SC = db.collection("statcommand");
+var COMMENT = db.collection("commentaire");
 
 router.post('/getsite',function(req,res){
 	SITES.find({},function(err,docs){
@@ -25,7 +26,6 @@ router.post('/getsiteOptions',function(req,res){
 			chaque_site.y=chaque._id.toString();
 			chaque_site.label=chaque.name;
 			chaque_site.color=chaque.color;
-			console.log(chaque_site);
 			array_options.push(chaque_site);
 			cb_docs(null);
 		},function(err){
@@ -127,7 +127,44 @@ router.post('/getstat_command',function(req,res){
 });
 
 
-
+/*
+ *  param:
+ * 
+ *  "debut" - le milliseconds de debut -- GetTime()
+ *  "fin"   - le milliseconds de fin  -- GetTime()
+ *  "contenu" -  le contenue de commentaire
+ *  "compte"  - le id de compte
+ * */
+router.post('/putcommentaire',function(req,res){
+	
+	var newCommentaire= Object.create(null);
+	
+	newCommentaire.date_debut=new Date(parseInt(req.body.debut));
+	newCommentaire.date_fin=new Date(parseInt(req.body.fin));	
+	newCommentaire.id_user=ObjectId(req.body.compte);
+	newCommentaire.contenu=req.body.contenu;
+	
+	COMMENT.save(newCommentaire,function(err,result){
+		res.jsonp("ok");
+	});
+	
+});
+/*
+ *  param:
+ * 
+ *  "date" - le milliseconds le date -- GetTime()
+ *  "compte" - le id de compte
+ * */
+router.post('/getcommentaire',function(req,res){
+	
+	var date=new Date(parseInt(req.body.date));
+	var compte=ObjectId(req.body.compte);
+	
+	COMMENT.find({id_user:compte, date_debut:{$lte:date}, date_fin:{$gte:date}},function(err,result){
+		res.jsonp(result);
+	});
+	
+});
 
 
 module.exports = router;
