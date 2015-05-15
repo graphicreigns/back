@@ -7,10 +7,18 @@ var async = require('async')
  , exec = require('child_process').exec;
 var db = require("./DB/db_con");
 var SITES=db.collection("sites");
+var USER=db.collection("user");
 //var ALLDATE= db.collection("alldate");
 //var FORMULA= db.collection("formula"); 
 var SC = db.collection("statcommand");
 var COMMENT = db.collection("commentaire");
+
+
+router.post('/getallcompte',function(req,res){
+	USER.find({},{site_name:1},function(err,docs){
+		res.jsonp(docs);
+	});
+});
 
 router.post('/getsite',function(req,res){
 	SITES.find({},function(err,docs){
