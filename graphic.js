@@ -11,10 +11,26 @@ var SITES=db.collection("sites");
 //var FORMULA= db.collection("formula"); 
 var SC = db.collection("statcommand");
 
-
 router.post('/getsite',function(req,res){
 	SITES.find({},function(err,docs){
 		res.jsonp(docs);
+	});
+});
+
+router.post('/getsiteOptions',function(req,res){
+	var array_options=[];
+	SITES.find({},{name:1,color:1},function(err,docs){
+		async.forEach(docs,function(chaque,cb_docs){
+			var chaque_site={};
+			chaque_site.y=chaque._id.toString();
+			chaque_site.label=chaque.name;
+			chaque_site.color=chaque.color;
+			console.log(chaque_site);
+			array_options.push(chaque_site);
+			cb_docs(null);
+		},function(err){
+			res.jsonp(array_options);
+		});
 	});
 });
 
@@ -107,8 +123,6 @@ router.post('/getstat_command',function(req,res){
 			res.jsonp(array_envoyer);
 		}
 	);
-		
-
 	
 });
 
