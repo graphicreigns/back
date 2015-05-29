@@ -1,24 +1,19 @@
-var express = require('express');
+var express = require('express'); 
 var router = express.Router();
-
 var async = require('async')
  , mongojs = require('mongojs')
  , ObjectId = mongojs.ObjectId
  , _ = require('underscore')
  , exec = require('child_process').exec;
-
-var db = require("./middleware/mid_db"); 
-
-var COMPTE=db.collection("user");
+var db = require("./middleware/mid_db");
+var MID_STA = require("./middleware/mid_sta");
 var SITES=db.collection("sites");
-var COMMENT=db.collection("commentaire");
-var SC=db.collection("statcommand");
+var COMPTE=db.collection("user");
+//var ALLDATE= db.collection("alldate");
+//var FORMULA= db.collection("formula"); 
+var SC = db.collection("statcommand");
+var COMMENT = db.collection("commentaire");
 
-/*
- *  param:
- * 
- *  "compte" - le id de compte
- * */
 
 router.post('/getsiteOptions',function(req,res){
 	var compte=ObjectId(req.body.compte);
@@ -55,7 +50,6 @@ router.post('/getstat_command',function(req,res){
 	var time_debut=parseInt(req.body.debut);
 	var time_fin=parseInt(req.body.fin);
 	var date_debut=new Date(time_fin);
-
 	var days=(time_fin - time_debut)/(24*60*60*1000);
 	var count=0;
 	
@@ -120,5 +114,25 @@ router.post('/getcommentaire',function(req,res){
 	});
 
 });
+
+module.exports = router;
+
+/*
+ *  param:
+ * 
+ *  "date" - le milliseconds le date -- GetTime()
+ *  "compte" - le id de compte
+ * */
+router.post('/getcommentaire',function(req,res){
+	
+	var date=new Date(parseInt(req.body.date));
+	var compte=ObjectId(req.body.compte);
+	
+	COMMENT.find({id_user:compte, date_debut:{$lte:date}, date_fin:{$gte:date}},function(err,result){
+		res.jsonp(result);
+	});
+	
+});
+
 
 module.exports = router;
