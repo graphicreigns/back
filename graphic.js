@@ -28,11 +28,13 @@ router.post('/getsite',function(req,res){
 
 router.post('/getsiteOptions',function(req,res){
 	var array_options=[];
-	SITES.find({},{name:1,color:1},function(err,docs){
+	SITES.find({},{name:1,color:1}).sort({name:1},function(err,docs){
 		async.forEach(docs,function(chaque,cb_docs){
 			var chaque_site={};
-			chaque_site.y=chaque._id.toString();
+			//chaque_site.y=chaque._id.toString();
+			chaque_site.y=chaque.name;
 			chaque_site.label=chaque.name;
+			chaque_site.id=chaque.name; 
 			chaque_site.color=chaque.color;
 			array_options.push(chaque_site);
 			cb_docs(null);
@@ -109,7 +111,7 @@ router.post('/getstat_command',function(req,res){
 									
 					async.forEach(result,function(elem,cb_docs){
 						SITES.findOne({_id:ObjectId(elem.id_site)},function(err,site){
-							oneday[site.name]=elem.nbcommand;
+							oneday[site.name]=parseInt(elem.nbcommand);
 							cb_docs(null);
 						});
 
@@ -176,5 +178,3 @@ router.post('/getcommentaire',function(req,res){
 
 
 module.exports = router;
-	
-	
