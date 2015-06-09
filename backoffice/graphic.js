@@ -136,6 +136,24 @@ router.post('/getstat_command',function(req,res){
 	
 });
 
+/*
+ * param:
+ * 
+ * "date" - le milliseconds de date(point) -- GetTime()
+ * "id_site" -  le id du site" 
+ * */
+router.post('/getLastSiteSC',function(req,res){
+	
+	var time=parseInt(req.body.date);
+	var date=new Date(time);
+	var site=ObjectId(req.body.id_site);
+	
+	SC.find({id_site:site, date:{$lte:date}}).sort({"date":-1}).limit(1,function(err,result){
+		res.jsonp(result);
+	});
+	
+	
+});
 
 /*
  *  param:
