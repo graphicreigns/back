@@ -34,7 +34,7 @@ router.post('/getsiteOptions',function(req,res){
 			//chaque_site.y=chaque._id.toString();
 			chaque_site.y=chaque.name;
 			chaque_site.label=chaque.name;
-			chaque_site.id=chaque.name; 
+			chaque_site.id=chaque._id.toString(); 
 			chaque_site.color=chaque.color;
 			array_options.push(chaque_site);
 			cb_docs(null);
@@ -43,6 +43,51 @@ router.post('/getsiteOptions',function(req,res){
 		});
 	});
 });
+
+
+/*
+ * param:
+ * 
+ * "date" - le milliseconds de date -- GetTime()
+ * "id_site" -  le id du site
+ *  "nb"   -  nb commande 
+ * */
+
+router.post('/updatestat_command',function(req,res){
+	
+	
+	var date=new Date(parseInt(req.body.date));
+	var date_plus=new Date(date.getFullYear(),date.getMonth(),date.getDate()+1);
+	
+	var id_site=ObjectId(req.body.id_site);
+	
+	SC.update({id_site:id_site,date:{ $gte: date, $lte: date_plus}},{$set:{nbcommand:parseInt(req.body.nb)}} ,function(err,result){
+		res.jsonp(result);
+	});
+	
+});
+
+/*
+ * param:
+ * 
+ * "date" - le milliseconds de date -- GetTime()
+ * "id_site" -  le id du site
+ * */
+
+router.post('/deletestat_command',function(req,res){
+	
+	
+	var date=new Date(parseInt(req.body.date));
+	var date_plus=new Date(date.getFullYear(),date.getMonth(),date.getDate()+1);
+	
+	var id_site=ObjectId(req.body.id_site);
+	
+	SC.remove({id_site:id_site,date:{ $gte: date, $lte: date_plus}} ,function(err,result){
+		res.jsonp(result);
+	});
+	
+});
+
 
 /*
  * param:
